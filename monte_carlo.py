@@ -1,40 +1,58 @@
 import diffusion_model as dm
 from random import random
+from math import exp
 
 def monte_carlo(energy,density,temperature):
     """inputs of some energy function, a given density and a temperature"""
-    #keep value of input density 
+    #keep value of input density
     first_density = density[:]
-    #compute the energy of the system. 
+    #compute the energy of the system.
     energy_val = energy(density)
-    #perturb the density by moving a particle 
+    #perturb the density by moving a particle
     second_density = perturb(density)
+    E0 = float(energy(first_density))
+    E1 = float(energy(second_density))
+    temperature = float(temperature)
     
-    print first_density, second_density
+    #if new energy is less, keep that.
+    if E0 > E1:
+        density = second_density
+    #or if the boltzmann exceeds a random number in [0,1]
+    elif boltzmann(E0,E1,temperature) > random():
+        print 'boing'
+        density = second_density
+    else:
+        density = first_density
+    return density
 
 def perturb(density):
-    #will pick a random particle in the density and move it either left or right 
+    #will pick a random particle in the density and move it either left or right
     num_particles = sum(density)
     particle_we_move =  random() * num_particles
     #here, we see which box the particle lived in - when we tick past the counter, then it was that box
-    i = 0 
+    i = 0
     ctr = 0
     while ctr < particle_we_move:
         ctr += density[i]
         box_no = i
         i += 1
     return move_particle_one(density,box_no)
-    
-#moves particle in box box_no one to left or right, at random. 
-#circular boundary conditions 
+
+#moves particle in box box_no one to left or right, at random.
+#circular boundary conditions
 def move_particle_one(density,box_no):
-    density[box_no] -= 1 
+    density[box_no] -= 1
     if random() > .5:
         density[(box_no + 1) %len(density)] += 1
-    else: 
+    else:
         density[(box_no - 1 )%len(density)] += 1
     return density
-        
-monte_carlo(dm.energy,[1000] * 5 ,1)
 
+#calculates the boltzmann distribution
+def boltzmann(E0,E1,T):
+    return exp(-(E1-E0)/T)
 
+density = [1] * 50
+for i in range(100):
+    density = monte_carlo(dm.energy,density ,1000)
+    print density
