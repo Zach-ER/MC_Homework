@@ -42,12 +42,13 @@ def which_box_loses_a_particle(density):
 #moves particle in box box_no one to left or right, at random.
 #circular boundary conditions
 def move_particle_one(density,box_no):
-    density[box_no] -= 1
+    new_density = density[:]
+    new_density[box_no] -= 1
     if random() > .5:
-        density[(box_no + 1) %len(density)] += 1
+        new_density[(box_no + 1) %len(density)] += 1
     else:
-        density[(box_no - 1 )%len(density)] += 1
-    return density
+        new_density[(box_no - 1 )%len(density)] += 1
+    return new_density
 
 #calculates the boltzmann distribution
 def boltzmann(E0,E1,T):
