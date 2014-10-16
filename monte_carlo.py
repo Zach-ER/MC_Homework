@@ -12,9 +12,8 @@ def monte_carlo(energy,density,temperature,iterations):
         #perturb the density by moving a particle
         box_no = which_box_loses_a_particle(density)
         second_density = move_particle_one(density,box_no)
-        E0 = float(energy(first_density))
-        E1 = float(energy(second_density))
-        temperature = float(temperature)
+        E0 = energy(first_density)
+        E1 = energy(second_density)
         
         #if new energy is less, keep that.
         if E0 > E1:
@@ -52,4 +51,7 @@ def move_particle_one(density,box_no):
 
 #calculates the boltzmann distribution
 def boltzmann(E0,E1,T):
+    E0 = float(E0)
+    E1 = float(E1)
+    T = float(T)
     return exp(-(E1-E0)/T)
