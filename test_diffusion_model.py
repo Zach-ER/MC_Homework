@@ -50,3 +50,11 @@ def test_boltzmann_sane():
 #the energy when the temp is higher
 def test_boltzmann_temps():
     assert MC.boltzmann(1,3,200) > MC.boltzmann(1,3,100)
+
+#check that a low energy solution splits the boxes evenly.
+def test_low_energy():
+    assert MC.monte_carlo(energy,[0, 100],1e-10,100) == [50,50]
+
+
+
+
